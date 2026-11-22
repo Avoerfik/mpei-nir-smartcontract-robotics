@@ -1,0 +1,425 @@
+% !TEX program = xelatex
+% Компилировать: xelatex -> xelatex (дважды, для содержания)
+% либо: latexmk -xelatex report.tex
+\documentclass[14pt,a4paper]{extarticle}
+
+% ================= ЯЗЫК И ШРИФТЫ =================
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\IfFontExistsTF{Times New Roman}
+{
+	\setmainfont{Times New Roman}
+	\newfontfamily\cyrillicfont{Times New Roman}[Script=Cyrillic]
+}
+{
+	\setmainfont[Script=Cyrillic]{FreeSerif}
+}
+
+\IfFontExistsTF{DejaVu Sans Mono}
+{
+	\setmonofont{DejaVu Sans Mono}[Script=Cyrillic]
+	\newfontfamily\cyrillicfonttt{DejaVu Sans Mono}[Script=Cyrillic]
+}
+{
+	\setmonofont{Courier New}[Script=Cyrillic]
+	\newfontfamily\cyrillicfonttt{Courier New}[Script=Cyrillic]
+}
+
+% ================= ГЕОМЕТРИЯ =================
+\usepackage{geometry}
+\geometry{left=30mm,right=15mm,top=20mm,bottom=20mm}
+
+% ================= ИНТЕРВАЛЫ =================
+% [МЭИ п.2.1] междустрочный интервал = 1,25
+\usepackage{setspace}
+\setstretch{1.25}
+\setlength{\parindent}{1.25cm}
+\usepackage{indentfirst}
+
+% ================= ПАКЕТЫ =================
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable}
+\usepackage{enumitem}
+% [МЭИ п.2.2.5] перечисления: тире для itemize, «1)» для enumerate
+\setlist[itemize]{label=--, labelindent=\parindent, leftmargin=*}
+\setlist[enumerate]{label=\arabic*), labelindent=\parindent, leftmargin=*}
+\usepackage{microtype}
+\usepackage{graphicx}
+
+% ================= ПОДПИСИ К ТАБЛИЦАМ =================
+% [МЭИ п.2.4.4] наименование над таблицей слева, без абзацного отступа,
+% «Таблица 2.1. Название»
+\usepackage{caption}
+\captionsetup[table]{
+	labelsep=period,
+	justification=raggedright,
+	singlelinecheck=false,
+	position=top,
+	skip=6pt
+}
+\counterwithin{table}{section}
+
+% ================= ССЫЛКИ И URL =================
+\usepackage[
+colorlinks=true,
+linkcolor=black,
+urlcolor=blue,
+citecolor=black,
+pdftitle={Отчёт по НИР},
+pdfauthor={Поздняков А. Г.}
+]{hyperref}
+\usepackage{xurl}
+
+% ================= ЗАГОЛОВКИ =================
+\usepackage{titlesec}
+
+% [МЭИ п.2.2.4] Разделы и подразделы основной части:
+%   — с абзацного отступа,
+%   — с прописной буквы (Title Case, НЕ капсом),
+%   — полужирные, 14 пт.
+% Число + точка + пробел, обтекание переносится к левому полю.
+\titleformat{\section}[block]
+{\bfseries}
+{\hspace*{\parindent}\thesection.}
+{0.5em}
+{}
+\titleformat{\subsection}[block]
+{\bfseries}
+{\hspace*{\parindent}\thesubsection.}
+{0.5em}
+{}
+\titlespacing*{\section}{0pt}{6pt plus 2pt minus 2pt}{6pt plus 2pt minus 2pt}
+\titlespacing*{\subsection}{0pt}{6pt plus 2pt minus 2pt}{6pt plus 2pt minus 2pt}
+
+% [МЭИ п.2.2.1] Структурные элементы (ВВЕДЕНИЕ, ЗАКЛЮЧЕНИЕ, СПИСОК, ПРИЛОЖЕНИЕ):
+%   — с новой страницы,
+%   — по центру,
+%   — ПРОПИСНЫМИ,
+%   — полужирные, 14 пт.
+% \phantomsection нужен, чтобы hyperref корректно ставил якорь для TOC.
+\newcommand{\structsec}[1]{%
+	\clearpage
+	\phantomsection
+	\addcontentsline{toc}{section}{#1}%
+	\begin{center}\bfseries #1\end{center}%
+	\vspace{6pt}%
+}
+
+% ================= БИБЛИОГРАФИЯ =================
+% [МЭИ п.2.9] Нумерация арабскими цифрами с точкой (1., 2., ...), не [1].
+% Наименование раздела — заголовком структурного элемента (\structsec),
+% внутренний \section*{\refname} из thebibliography отключаем.
+\makeatletter
+\renewcommand{\@biblabel}[1]{#1.}
+\renewenvironment{thebibliography}[1]
+{\structsec{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}%
+	\list{\@biblabel{\@arabic\c@enumiv}}%
+	{\settowidth\labelwidth{\@biblabel{#1}}%
+		\leftmargin\labelwidth
+		\advance\leftmargin\labelsep
+		\itemindent\parindent  % [МЭИ п.2.9] абзацный отступ
+		\usecounter{enumiv}%
+		\let\p@enumiv\@empty
+		\renewcommand\theenumiv{\@arabic\c@enumiv}}%
+	\sloppy
+	\clubpenalty4000
+	\@clubpenalty\clubpenalty
+	\widowpenalty4000
+	\sfcode`\.\@m}
+{\def\@noitemerr
+	{\@latex@warning{Empty `thebibliography' environment}}%
+	\endlist}
+\makeatother
+
+% ================= ДОКУМЕНТ =================
+\begin{document}
+	
+	% ================= ТИТУЛЬНЫЙ ЛИСТ =================
+	\begin{titlepage}
+		\centering
+		\small
+		Федеральное государственное бюджетное образовательное учреждение\\
+		высшего образования\\
+		«Национальный исследовательский университет „МЭИ“»\\[0.9cm]
+		Институт ИВТИ\\
+		Кафедра ВМСС\\
+		Направление подготовки:\\
+		09.03.01 «Информатика и вычислительная техника»
+		
+		\vspace{3.5cm}
+		
+		{\Large\bfseries ОТЧЁТ ПО ПРОИЗВОДСТВЕННОЙ ПРАКТИКЕ\par}
+		\vspace{0.4cm}
+		{\normalsize\bfseries Научно-исследовательская работа\par}
+		
+		\vspace{1.9cm}
+		
+		{\large\bfseries
+			Применение смарт-контрактов для координации\\
+			робототехнических систем, регистрация\\
+			результатов аукционов\par}
+		
+		\vfill
+		
+		\begin{flushright}
+			\begin{minipage}{0.58\textwidth}
+				\raggedright
+				Студент:\\[2pt]
+				\textbf{Поздняков Андрей Григорьевич}\\[2pt]
+				группа \textbf{А-08-24}
+				
+				\vspace{0.9cm}
+				
+				Промежуточная аттестация по практике:\\
+				\rule{3.5cm}{0.4pt}
+				
+				\vspace{0.9cm}
+				
+				Руководитель практики:\\[2pt]
+				\textbf{Оцоков Шамиль Алиевич}
+			\end{minipage}
+		\end{flushright}
+		
+		\vfill
+		
+		Москва, 2026
+	\end{titlepage}
+	
+	% ================= СОДЕРЖАНИЕ =================
+	\tableofcontents
+	\clearpage
+	
+	% ================= ГРАФИК =================
+	\structsec{ГРАФИК ПРОХОЖДЕНИЯ НИР}
+	
+	\begin{center}
+		\renewcommand{\arraystretch}{1.4}
+		\begin{tabular}{|>{\centering\arraybackslash}p{1.1cm}|p{10.3cm}|>{\centering\arraybackslash}p{2.8cm}|}
+			\hline
+			\textbf{№} & \textbf{Перечень работ} & \textbf{Отметка} \\
+			\hline
+			1 & Поиск и анализ научных источников по распределению задач и смарт-контрактам & выполнено \\
+			\hline
+			2 & Формализация постановки задачи и выбор алгоритма аукционного распределения & выполнено \\
+			\hline
+			3 & Проектирование архитектуры MQTT-обмена и регистрации результата в смарт-контракте & выполнено \\
+			\hline
+			4 & Разработка демонстрационной программы & выполнено \\
+			\hline
+			5 & Запись видео 20--30 с, оформление отчёта и списка источников & в работе \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	\vspace{0.8cm}
+	\noindent Руководитель практики (от МЭИ) \rule{4cm}{0.4pt} / \rule{4cm}{0.4pt} /
+	
+	% ================= ВВЕДЕНИЕ =================
+	\structsec{ВВЕДЕНИЕ}
+	
+	Современные робототехнические системы всё чаще применяются на складах, в логистике, при мониторинге территорий и в производстве. В таких системах несколько роботов должны самостоятельно распределять между собой появляющиеся задания: перевезти груз, посетить точку, осмотреть участок, доставить деталь. Централизованный диспетчер упрощает распределение, но создаёт единую точку отказа и требует постоянной связи с каждым роботом.
+	
+	Альтернативой являются децентрализованные аукционные механизмы. Роботы публикуют ставки — оценки стоимости или полезности выполнения задания, — после чего по согласованному правилу выбирается победитель. Для многороботных систем известны алгоритмы CBAA и CBBA \cite{choi2009,brunet2008}, аукционный алгоритм Д.~Берцекаса \cite{bertsekas1988}, а также алгоритмы коллективного управления, описанные И.~А.~Каляевым и соавторами \cite{kalyaev2009}. Такие методы позволяют распределять задачи без единого диспетчера, однако результат аукциона должен быть зафиксирован так, чтобы его нельзя было незаметно изменить.
+	
+	Для регистрации результатов аукционов предлагается использовать смарт-контракт. Смарт-контракт — это программа, исполняемая в блокчейне, которая хранит данные и события в неизменяемом виде \cite{buterin2014,solidity}. В данной работе смарт-контракт рассматривается не как замена быстрому обмену сообщениями, а как распределённый реестр итогов аукциона: кто победил, какое задание получил, какой хеш назначения и временная метка были зафиксированы.
+	
+	\textbf{Цель НИР} — подготовить и обосновать архитектуру координации робототехнических систем на основе аукционного распределения задач и смарт-контракта для регистрации результатов аукционов.
+	
+	\textbf{Задачи НИР:}
+	\begin{enumerate}
+		\item проанализировать источники по распределению задач в многороботных системах;
+		\item рассмотреть аукционные и консенсусные алгоритмы CBAA/CBBA и алгоритм 3.1 из работы \cite{kalyaev2009};
+		\item предложить архитектуру, в которой роботы обмениваются ставками через MQTT, а итог аукциона регистрируется в смарт-контракте;
+		\item подготовить демонстрационную программу и сценарий видео 20--30~с;
+		\item оформить черновик отчёта и список источников.
+	\end{enumerate}
+	
+	% ================= РАЗДЕЛ 1 =================
+	\clearpage
+	\section{Постановка и описание задачи}
+	
+	\subsection{Краткая история и современное состояние направления}
+	
+	Задача распределения задач в многороботных системах формально классифицирована в работе \cite{gerkey2004}. В обзоре \cite{dias2006} показано, что рыночные и аукционные механизмы позволяют координировать роботов через локальные ставки и правила выбора победителя. В классической работе \cite{bertsekas1988} аукционный алгоритм решает задачу о назначениях через конкуренцию за объекты и обновление цен.
+	
+	Для распределения задач в группах роботов широко применяются CBAA — назначение не более одной задачи каждому роботу за запуск, и CBBA — формирование пакетов задач \cite{choi2009,brunet2008}. В этих алгоритмах роботы обмениваются сведениями с соседями и согласуют победителей. В работе \cite{johnson2011} рассмотрено асинхронное распределение задач и перепланирование при изменениях. В \cite{raja2022} исследуется сокращение обмена сообщениями в условиях ограниченной связи. Алгоритм 3.1 из \cite{kalyaev2009} иллюстрирует коллективное улучшение плана распределения целей через попарные обмены и циклические перестановки.
+	
+	Современное направление связано с применением блокчейна и смарт-контрактов для доверенной фиксации результатов. Ethereum и язык Solidity \cite{buterin2014,solidity} позволяют создать контракт, который хранит хеш назначения и излучает событие о регистрации аукциона. При этом сам аукцион может выполняться вне блокчейна, так как запись каждой ставки в блокчейн была бы слишком дорогой и медленной.
+	
+	\subsection{Формальная постановка задачи}
+	
+	Рассматривается группа из \(N\) роботов и множество из \(M\) заданий. Для робота \(i\) и задания \(j\) задаётся оценка эффективности \(d_{ij} \ge 0\). В простейшем случае \(N=M\), каждый робот получает ровно одно задание, а каждое задание назначается ровно одному роботу. Требуется найти назначение \(x_{ij} \in \{0,1\}\), максимизирующее суммарную эффективность:
+	\[
+	Y = \sum_{i=1}^{N}\sum_{j=1}^{M} d_{ij}\, x_{ij} \to \max,
+	\]
+	при ограничениях:
+	\[
+	\sum_{j=1}^{M} x_{ij} \le 1,\qquad
+	\sum_{i=1}^{N} x_{ij} = 1,\qquad
+	x_{ij} \in \{0,1\}.
+	\]
+	
+	В более общем случае робот может получить пакет заданий, как в CBBA \cite{choi2009,brunet2008}. Для демонстрации достаточно случая «один робот — одно задание за раунд»: он проще для видео и соответствует CBAA.
+	
+	После выбора назначения формируется запись аукциона:
+	\[
+	H = \mathrm{Hash}(\text{auctionId} \;\Vert\; \text{assignment} \;\Vert\; \text{timestamp}).
+	\]
+	Смарт-контракт хранит \texttt{auctionId}, \(H\), список победителей, номера заданий и временную метку. Это позволяет позже проверить, что результат не был изменён.
+	
+	\subsection{Требования к демонстрационной программе}
+	
+	Демонстрационная программа должна:
+	\begin{itemize}
+		\item имитировать 3--5 роботов и 3--5 заданий;
+		\item передавать ставки через MQTT-брокер;
+		\item выбирать победителя по аукционному правилу;
+		\item выводить итоговое назначение в терминал;
+		\item вычислять хеш назначения;
+		\item отправлять результат в смарт-контракт через API или в заглушку;
+		\item укладываться в видео 20--30~секунд.
+	\end{itemize}
+	
+	% ================= РАЗДЕЛ 2 =================
+	\clearpage
+	\section{Результаты выполнения задания}
+	
+	\subsection{Поиск и систематизация источников}
+	
+	Подготовлен список из 10 источников. Восемь источников относятся к распределению задач, аукционным и консенсусным алгоритмам \cite{choi2009,brunet2008,bertsekas1988,kalyaev2009,gerkey2004,dias2006,johnson2011,raja2022}. Два источника описывают смарт-контракты и язык Solidity \cite{buterin2014,solidity}. Такое сочетание позволяет обосновать две части решения: алгоритм выбора исполнителя и механизм неизменяемой регистрации результата.
+	
+	\subsection{Анализ подходов к распределению задач}
+	
+	Сопоставление подходов к распределению задач приведено в табл.~\ref{tab:approaches}.
+	
+	\begin{table}[htbp]
+		\caption{Анализ подходов к распределению задач}
+		\label{tab:approaches}
+		\renewcommand{\arraystretch}{1.35}
+		\begin{tabular}{|>{\centering\arraybackslash}p{4.2cm}|
+				>{\centering\arraybackslash}p{2.6cm}|
+				>{\centering\arraybackslash}p{6.7cm}|}
+			\hline
+			\textbf{Подход} & \textbf{Источники} & \textbf{Роль в работе} \\
+			\hline
+			Аукционный алгоритм & \cite{bertsekas1988} & Математическая основа выбора назначения через ставки и цены \\
+			\hline
+			CBAA/CBBA & \cite{choi2009,brunet2008} & Децентрализованное согласование победителей через обмен с соседями \\
+			\hline
+			Алгоритм 3.1 & \cite{kalyaev2009} & Учебная иллюстрация попарных обменов и циклических перестановок \\
+			\hline
+			Асинхронное распределение & \cite{johnson2011} & Учёт задержек и перепланирования \\
+			\hline
+			Связь с ограничениями & \cite{raja2022} & Сокращение объёма сообщений \\
+			\hline
+			Смарт-контракты & \cite{buterin2014,solidity} & Регистрация итогов аукциона и проверка целостности \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	Для демонстрации выбран гибридный сценарий: роботы обмениваются ставками через MQTT, применяют простое аукционное правило или CBAA-подобное согласование, а затем победитель отправляет итог в смарт-контракт. Это соответствует теме задания №4: смарт-контракт используется как распределённая база данных для согласованного назначения.
+	
+	\subsection{Архитектура решения «MQTT + аукцион + смарт-контракт»}
+	
+	Предлагаемая архитектура включает:
+	\begin{enumerate}
+		\item \textbf{роботов-агентов} — программы на Python, которые публикуют ставки и подписываются на топики MQTT;
+		\item \textbf{MQTT-брокер} — транспорт для ставок и служебных сообщений; MQTT выбран как лёгкий протокол публикации/подписки;
+		\item \textbf{модуль аукциона} — правило выбора победителя: максимальная ставка, CBAA-подобное согласование или алгоритм 3.1 для локальных улучшений;
+		\item \textbf{модуль хеширования} — вычисляет хеш итогового назначения;
+		\item \textbf{смарт-контракт} — хранит \texttt{auctionId}, хеш назначения, победителей и время; вызов выполняется через API, который предоставляет руководитель;
+		\item \textbf{заглушку смарт-контракта} — локальный JSON-реестр на время, пока API недоступен.
+	\end{enumerate}
+	
+	Смарт-контракт не участвует в каждом шаге торга. Он фиксирует только итог: это снижает задержку и стоимость записи. Для аудита можно хранить хеши ставок или подписи роботов, но в черновике достаточно хеша назначения.
+	
+	\subsection{Сценарий демонстрационной программы}
+	
+	\begin{enumerate}
+		\item Запускается MQTT-брокер.
+		\item Запускаются 3 робота: \texttt{R1}, \texttt{R2}, \texttt{R3}.
+		\item Появляются 3 задания: \texttt{T1}, \texttt{T2}, \texttt{T3}.
+		\item Каждый робот публикует ставки в топик \texttt{auction/bids}.
+		\item Модуль аукциона выбирает назначение с максимальной суммарной эффективностью.
+		\item В терминал выводится строка: \texttt{R1->T1, R2->T2, R3->T3, Y=24.500}.
+		\item Вычисляется хеш \(H\).
+		\item Вызывается функция \texttt{registerAuctionResult(auctionId, H, winners, tasks, timestamp)}.
+		\item В терминале появляется событие \texttt{AuctionRegistered}.
+		\item Видео 20--30~с показывает эти шаги.
+	\end{enumerate}
+	
+	\subsection{Ограничения и направления развития}
+	
+	\textbf{Ограничения:}
+	\begin{itemize}
+		\item MQTT-брокер остаётся центральным элементом обмена, хотя выбор исполнителя децентрализован;
+		\item запись в блокчейн имеет задержку и стоимость;
+		\item необходимо подписывать сообщения, чтобы робот не мог подменить ставку;
+		\item в реальной сети нужны правила обработки запоздалых сообщений, как в \cite{johnson2011};
+		\item при большом числе роботов нужно ограничивать объём обмена, как в \cite{raja2022}.
+	\end{itemize}
+	
+	\textbf{Развитие:}
+	\begin{itemize}
+		\item перейти от простого аукциона к CBBA с пакетами задач;
+		\item хранить в смарт-контракте хеши ставок и подписи;
+		\item добавить проверку, что одно задание не зарегистрировано дважды;
+		\item реализовать API смарт-контракта, который предоставит руководитель.
+	\end{itemize}
+	
+	% ================= ЗАКЛЮЧЕНИЕ =================
+	\structsec{ЗАКЛЮЧЕНИЕ}
+	
+	В ходе подготовки НИР проанализированы источники по аукционному распределению задач в многороботных системах и по смарт-контрактам. Показано, что для координации роботов целесообразно использовать децентрализованные аукционные механизмы, а смарт-контракт применять как неизменяемый реестр итогов аукциона. Предложена архитектура «MQTT + аукцион + смарт-контракт», описана демонстрационная программа и сценарий видео 20--30~с.
+	
+	Получены навыки поиска и систематизации научных источников, формализации задачи распределения, проектирования программной архитектуры и подготовки отчёта по НИР. Дальнейшая работа — реализация демо, подключение API смарт-контракта, запись видео и оформление итогового отчёта по требованиям МЭИ.
+	
+	% ================= СПИСОК ИСТОЧНИКОВ =================
+	% Порядок — по первому появлению \cite в тексте.
+	\begin{thebibliography}{99}
+		
+		\bibitem{choi2009}
+		Choi, H.-L. Consensus-Based Decentralized Auctions for Robust Task Allocation / H.-L. Choi, L. Brunet, J.~P. How // IEEE Transactions on Robotics. -- 2009. -- Vol.~25, No.~4. -- P.~912--926. -- URL: \url{https://dspace.mit.edu/entities/publication/b0bf0a05-be3b-433b-9f4b-ce314ed5178b} (дата обращения: 23.11.2026).
+		
+		\bibitem{brunet2008}
+		Brunet, L. Consensus-Based Auctions for Decentralized Task Assignment : PhD thesis / L.~Brunet. -- MIT, 2008. -- URL: \url{https://dspace.mit.edu/entities/publication/53d56696-45cf-46f5-bbde-fc39e88da869} (дата обращения: 23.11.2026).
+		
+		\bibitem{bertsekas1988}
+		Bertsekas, D.~P. The Auction Algorithm: A Distributed Relaxation Method for the Assignment Problem / D.~P. Bertsekas // Annals of Operations Research. -- 1988. -- Vol.~14. -- P.~105--123. -- URL: \url{https://www.mit.edu/~dimitrib/TheAuctionAP.pdf} (дата обращения: 23.11.2026).
+		
+		\bibitem{kalyaev2009}
+		Каляев, И.~А. Модели и алгоритмы коллективного управления в группах роботов / И.~А. Каляев, А.~Р. Гайдук, С.~Г. Капустян. -- М. : ФИЗМАТЛИТ, 2009. -- 280~с.
+		
+		\bibitem{buterin2014}
+		Buterin, V. Ethereum Whitepaper: A Next-Generation Smart Contract and Decentralized Application Platform / V.~Buterin. -- 2014. -- URL: \url{https://ethereum.org/en/whitepaper/} (дата обращения: 23.11.2026).
+		
+		\bibitem{solidity}
+		Solidity Documentation. -- URL: \url{https://docs.soliditylang.org/} (дата обращения: 23.11.2026).
+		
+		\bibitem{gerkey2004}
+		Gerkey, B.~P. A Formal Analysis and Taxonomy of Task Allocation in Multi-Robot Systems / B.~P. Gerkey, M.~J. Matari\'{c} // The International Journal of Robotics Research. -- 2004. -- Vol.~23, No.~9. -- P.~939--954. -- URL: \url{https://cse-robotics.engr.tamu.edu/dshell/cs689/papers/gerkey04formal.pdf} (дата обращения: 23.11.2026).
+		
+		\bibitem{dias2006}
+		Dias, M.~B. Market-Based Multirobot Coordination: A Survey and Analysis / M.~B. Dias, R.~Zlot, N.~Kalra, A.~Stentz // Proceedings of the IEEE. -- 2006. -- Vol.~94, No.~7. -- P.~1257--1270. -- URL: \url{https://www.ri.cmu.edu/pub_files/2006/7/01677943-1.pdf} (дата обращения: 23.11.2026).
+		
+		\bibitem{johnson2011}
+		Johnson, L.~B. Asynchronous Decentralized Task Allocation for Dynamic Environments / L.~B. Johnson, H.-L. Choi, J.~P. How, J.~Tisdale // AIAA Infotech@Aerospace. -- 2011. -- URL: \url{https://dspace.mit.edu/entities/publication/8027006a-fddf-44a7-b5b9-3475099d7e6c} (дата обращения: 23.11.2026).
+		
+		\bibitem{raja2022}
+		Raja, A. Communication-Aware Consensus-Based Decentralized Task Allocation in Communication Constrained Environments / A.~Raja, G.~Habibi, J.~P. How. -- 2022. -- URL: \url{https://dspace.mit.edu/entities/publication/246924bb-5d66-4451-9c2c-8a24725fd41b} (дата обращения: 23.11.2026).
+		
+	\end{thebibliography}
+	
+	% ================= ПРИЛОЖЕНИЕ А =================
+	\structsec{ПРИЛОЖЕНИЕ А. ССЫЛКИ НА РЕПОЗИТОРИЙ И ВИДЕОДЕМОНСТРАЦИЮ}
+	
+	\begin{itemize}
+		\item Репозиторий GitHub: \url{https://github.com/Avoerfik/mpei-nir-smartcontract-robotics}.
+		\item Видеодемонстрация 20--30~с: \rule{3cm}{0.4pt}.
+		\item API смарт-контракта: \rule{3cm}{0.4pt}.
+	\end{itemize}
+	
+\end{document}

@@ -1,0 +1,228 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Виртуальные окружения
+.venv/
+venv/
+env/
+ENV/
+.venv*/
+venv*/
+
+# Тесты, кэши, покрытие
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# =========================
+# Секреты и доступы
+# =========================
+.env
+.env.*
+!.env.example
+
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+keystore/
+secrets/
+secret/
+credentials.json
+service-account*.json
+auth.json
+token.json
+*.secret
+
+# SSH-ключи и сертификаты MQTT
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.crt
+*.csr
+*.cer
+*.der
+*.ca
+certs/
+certs_private/
+
+# =========================
+# Блокчейн / Solidity / Web3
+# =========================
+node_modules/
+package-lock.json.bak
+yarn.lock.bak
+
+# Hardhat
+artifacts/
+cache/
+typechain-types/
+coverage/
+coverage.json
+
+# Foundry
+out/
+broadcast/
+lib/
+forge-cache/
+
+# Truffle
+build/contracts/
+
+# Локальные приватные ключи и мнемоники
+*.mnemonic
+mnemonic.txt
+private_key.txt
+private-keys/
+wallets/
+wallet.json
+
+# Локальные базы и реестры-заглушки
+*.db
+*.sqlite
+*.sqlite3
+*.jsonl
+data/local/
+local_registry/
+auction_registry_stub.json
+
+# =========================
+# Логи и временные файлы
+# =========================
+*.log
+logs/
+log/
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# =========================
+# IDE / редакторы
+# =========================
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# =========================
+# ОС
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# =========================
+# Медиа и большие файлы
+# =========================
+# Видео лучше хранить на сайте/диске, а не в Git
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# Большие архивы
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+# =========================
+# Прочее
+# =========================
+*.pid
+*.seed
+*.pid.lock
+.pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# LaTeX build artifacts
+# =========================
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.synctex(busy)
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
+*.idx
+*.ilg
+*.ind
+*.lof
+*.lot
+*.run.xml
+*.bcf
+missfont.log
+
+# LaTeX auxiliary directory (если будете собирать в build/)
+build/
+latex.out/
+
+# ruff
+.ruff_cache/
+
+# PDF решения (см. комментарий в README):
+# если хотите хранить собранный PDF в репозитории — закомментируйте строку ниже
+# report_NIR.pdf
